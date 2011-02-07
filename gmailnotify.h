@@ -11,6 +11,7 @@
 #include <interfaces/inotifications.h>
 #include <utils/iconstorage.h>
 #include <utils/stanza.h>
+#include <utils/options.h>
 
 #define GMAILNOTIFY_UUID "{ff4ab60b-60d1-45f3-942a-68dc80624408}"
 
@@ -38,7 +39,7 @@ struct GmailThread
 struct GmailReply
 {
 	Jid streamJid;
-	qlonglong resultTime;
+	QString resultTime;
 	int totalMatched;
 	int totalEstimate;
 	QUrl mailUrl;
@@ -72,9 +73,9 @@ public:
 	//IGmailNotify
 	virtual bool isSupported(const Jid &AStreamJid) const;
 protected:
-	bool checkNewMail(const Jid &AStreamJid);
+	bool checkNewMail(const Jid &AStreamJid, bool AFull);
 	GmailReply parseGmailReply(const Stanza &AStanza) const;
-	void notifyGmailReply(const GmailReply &AReply);
+	void notifyGmailReply(const GmailReply &AReply, bool ATotal);
 protected:
 	void registerDiscoFeatures();
 	void insertStanzaHandler(const Jid &AStreamJid);
@@ -93,7 +94,7 @@ private:
 	QMap<Jid,int> FSHIGmailNotify;
 private:
 	QMap<int,GmailReply> FNotifies;
-	QMap<QString,Jid> FMailRequests;
+	QMap<QString,bool> FMailRequests;
 };
 
 #endif // GMAILNOTIFY_H

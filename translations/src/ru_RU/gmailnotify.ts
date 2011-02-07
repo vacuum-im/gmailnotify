@@ -31,5 +31,13 @@
         <source>Supports the notifications of new e-mails in Google Mail</source>
         <translation>Поддерживает уведомления о новой почте в Google Mail</translation>
     </message>
+    <message numerus="yes">
+        <source>You have %n new unread message(s)</source>
+        <translation>
+            <numerusform>У вас %n новое непрочитанное сообщение</numerusform>
+            <numerusform>У вас %n новых непрочитанных сообщения</numerusform>
+            <numerusform>У вас %n новых непрочитанных сообщений</numerusform>
+        </translation>
+    </message>
 </context>
 </TS>

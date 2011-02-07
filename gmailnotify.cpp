@@ -17,9 +17,16 @@
 //Menu Icons
 #define MNI_GMAILNOTIFY_GMAIL            "gmailnotifyGmail"
 
+//Options
+#define OPV_GMAILNOTIFY_ROOT             "gmail-notify"
+#define OPV_GMAILNOTIFY_ACCOUNT_ITEM     "gmail-notify.account"
+#define OPV_GMAILNOTIFY_ACCOUNT_LASTTID  "gmail-notify.account.last-tid"
+#define OPV_GMAILNOTIFY_ACCOUNT_LASTTIME "gmail-notify.account.last-time"
+
 #define SHC_GMAILNOTIFY                  "/iq[@type='set']/new-mail[@xmlns='" NS_GMAILNOTIFY "']"
 
 #define NOTIFY_TIMEOUT                   30000
+#define MAX_SEPARATE_NOTIFIES            3
 
 GmailNotify::GmailNotify()
 {
@@ -42,7 +49,7 @@ void GmailNotify::pluginInfo(IPluginInfo *APluginInfo)
 {
 	APluginInfo->name = tr("GMail Notifications");
 	APluginInfo->description = tr("Notify of new e-mails in Google Mail");
-	APluginInfo->version = "1.0";
+	APluginInfo->version = "1.0.1";
 	APluginInfo->author = "Potapov S.A. aka Lion";
 	APluginInfo->homePage = "http://code.google.com/p/vacuum-plugins";
 	APluginInfo->dependences.append(STANZAPROCESSOR_UUID);
@@ -112,7 +119,7 @@ bool GmailNotify::stanzaReadWrite(int AHandleId, const Jid &AStreamJid, Stanza &
 		Stanza reply("iq");
 		reply.setType("result").setId(AStanza.id());
 		FStanzaProcessor->sendStanzaOut(AStreamJid,reply);
-		checkNewMail(AStreamJid);
+		checkNewMail(AStreamJid,false);
 	}
 	return false;
 }
@@ -121,11 +128,11 @@ void GmailNotify::stanzaRequestResult(const Jid &AStreamJid, const Stanza &AStan
 {
 	if (FMailRequests.contains(AStanza.id()))
 	{
-		FMailRequests.remove(AStanza.id());
+		bool fullRequest = FMailRequests.take(AStanza.id());
 		if (AStanza.type() == "result")
 		{
 			insertStanzaHandler(AStreamJid);
-			notifyGmailReply(parseGmailReply(AStanza));
+			notifyGmailReply(parseGmailReply(AStanza),fullRequest);
 		}
 	}
 }
@@ -135,7 +142,7 @@ void GmailNotify::stanzaRequestTimeout(const Jid &AStreamJid, const QString &ASt
 	if (FMailRequests.contains(AStanzaId))
 	{
 		FMailRequests.remove(AStanzaId);
-		checkNewMail(AStreamJid);
+		checkNewMail(AStreamJid,false);
 	}
 }
 
@@ -144,35 +151,42 @@ bool GmailNotify::isSupported(const Jid &AStreamJid) const
 	return FSHIGmailNotify.contains(AStreamJid);
 }
 
-bool GmailNotify::checkNewMail(const Jid &AStreamJid)
+bool GmailNotify::checkNewMail(const Jid &AStreamJid, bool AFull)
 {
-	if (!FMailRequests.values().contains(AStreamJid.bare()))
+	Stanza query("iq");
+	query.setType("get").setId(FStanzaProcessor->newId());
+	QDomElement queryElem = query.addElement("query",NS_GMAILNOTIFY);
+   
+   if (!AFull)
+   {
+      QString lastTid = Options::node(OPV_GMAILNOTIFY_ACCOUNT_ITEM,AStreamJid.pBare()).value("last-tid").toString();
+      if (!lastTid.isEmpty())
+         queryElem.setAttribute("newer-than-tid",lastTid);
+
+      QString lastTime = Options::node(OPV_GMAILNOTIFY_ACCOUNT_ITEM,AStreamJid.pBare()).value("last-time").toString();
+      if (!lastTime.isEmpty())
+         queryElem.setAttribute("newer-than-time",lastTime);
+   }
+
+	if (FStanzaProcessor->sendStanzaRequest(this,AStreamJid,query,NOTIFY_TIMEOUT))
 	{
-		Stanza query("iq");
-		query.setType("get").setId(FStanzaProcessor->newId());
-		QDomElement queryElem = query.addElement("query",NS_GMAILNOTIFY);
-		if (FStanzaProcessor->sendStanzaRequest(this,AStreamJid,query,NOTIFY_TIMEOUT))
-		{
-			FMailRequests.insert(query.id(),AStreamJid.bare());
-			return true;
-		}
-		return false;
+		FMailRequests.insert(query.id(),AFull);
+		return true;
 	}
-	return true;
+	return false;
 }
 
 GmailReply GmailNotify::parseGmailReply(const Stanza &AStanza) const
 {
 	GmailReply reply;
 	reply.streamJid = AStanza.to();
-	reply.resultTime = 0;
 	reply.totalMatched = 0;
 	reply.totalEstimate = 0;
 
 	QDomElement replyElem = AStanza.firstElement("mailbox",NS_GMAILNOTIFY);
 	if (!replyElem.isNull())
 	{
-		reply.resultTime = replyElem.attribute("result-time").toLongLong();
+		reply.resultTime = replyElem.attribute("result-time");
 		reply.totalMatched = replyElem.attribute("total-matched").toInt();
 		reply.totalEstimate = replyElem.attribute("total-estimate").toInt();
 		reply.mailUrl = replyElem.attribute("url");
@@ -211,7 +225,7 @@ GmailReply GmailNotify::parseGmailReply(const Stanza &AStanza) const
 	return reply;
 }
 
-void GmailNotify::notifyGmailReply(const GmailReply &AReply)
+void GmailNotify::notifyGmailReply(const GmailReply &AReply, bool ATotal)
 {
 	if (FNotifications && AReply.theads.count()>0)
 	{
@@ -222,23 +236,28 @@ void GmailNotify::notifyGmailReply(const GmailReply &AReply)
 		{
 			notify.data.insert(NDR_ICON,IconStorage::staticStorage(RSR_STORAGE_MENUICONS)->getIcon(MNI_GMAILNOTIFY_GMAIL));
 			notify.data.insert(NDR_TOOLTIP,tr("New e-mail for %1").arg(AReply.streamJid.bare()));
-			if (AReply.theads.count() > 1)
+			if (ATotal || AReply.theads.count()>MAX_SEPARATE_NOTIFIES)
 			{
 				notify.data.insert(NDR_POPUP_CAPTION,tr("New e-mail"));
 				notify.data.insert(NDR_POPUP_TITLE,AReply.streamJid.bare());
-				notify.data.insert(NDR_POPUP_HTML,Qt::escape(tr("You have %n unread message(s)","",AReply.totalMatched)));
+            if (ATotal)
+				   notify.data.insert(NDR_POPUP_HTML,Qt::escape(tr("You have %n unread message(s)","",AReply.totalMatched)));
+            else
+               notify.data.insert(NDR_POPUP_HTML,Qt::escape(tr("You have %n new unread message(s)","",AReply.theads.count())));
+            FNotifies.insert(FNotifications->appendNotification(notify),AReply);
 			}
-			else if (AReply.theads.count() == 1)
+			else for (int i=0; i<AReply.theads.count(); i++)
 			{
-				GmailThread gthread = AReply.theads.value(0);
+				GmailThread gthread = AReply.theads.value(i);
 				GmailSender sender = gthread.senders.value(0);
 				notify.data.insert(NDR_POPUP_CAPTION,tr("New e-mail for %1").arg(AReply.streamJid.bare()));
 				notify.data.insert(NDR_POPUP_TITLE,!sender.name.isEmpty() ? QString("%1 <%2>").arg(sender.name).arg(sender.address) : sender.address);
 				notify.data.insert(NDR_POPUP_HTML,Qt::escape(gthread.subject + " - " + gthread.snippet));
+            FNotifies.insert(FNotifications->appendNotification(notify),AReply);
 			}
-			int notifyId = FNotifications->appendNotification(notify);
-			FNotifies.insert(notifyId,AReply);
 		}
+      Options::node(OPV_GMAILNOTIFY_ACCOUNT_ITEM,AReply.streamJid.pBare()).setValue(AReply.resultTime,"last-time");
+      Options::node(OPV_GMAILNOTIFY_ACCOUNT_ITEM,AReply.streamJid.pBare()).setValue(AReply.theads.value(0).threadId,"last-tid");
 	}
 }
 
@@ -276,7 +295,7 @@ void GmailNotify::removeStanzaHandler(const Jid &AStreamJid)
 
 void GmailNotify::onXmppStreamOpened(IXmppStream *AXmppStream)
 {
-	checkNewMail(AXmppStream->streamJid());
+	checkNewMail(AXmppStream->streamJid(),true);
 }
 
 void GmailNotify::onXmppStreamClosed(IXmppStream *AXmppStream)
@@ -289,7 +308,7 @@ void GmailNotify::onNotificationActivated( int ANotifyId )
 	if (FNotifies.contains(ANotifyId))
 	{
 		GmailReply reply = FNotifies.take(ANotifyId);
-		QDesktopServices::openUrl(reply.theads.count()>1 ? reply.mailUrl : reply.theads.value(0).threadUrl);
+		QDesktopServices::openUrl(reply.mailUrl);
 		FNotifications->removeNotification(ANotifyId);
 	}
 }
