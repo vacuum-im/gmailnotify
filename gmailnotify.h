@@ -68,6 +68,7 @@ protected:
 protected slots:
 	void onXmppStreamOpened(IXmppStream *AXmppStream);
 	void onXmppStreamClosed(IXmppStream *AXmppStream);
+	void onDiscoveryInfoReceived(const IDiscoInfo &AInfo);
 	void onNotificationActivated(int ANotifyId);
 	void onNotificationRemoved(int ANotifyId);
 	void onRosterLabelClicked(IRosterIndex *AIndex, int ALabelId);

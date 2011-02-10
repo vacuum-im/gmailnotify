@@ -53,6 +53,10 @@ bool GmailNotify::initConnections(IPluginManager *APluginManager, int &AInitOrde
 	if (plugin)
 	{
 		FDiscovery = qobject_cast<IServiceDiscovery *>(plugin->instance());
+		if (FDiscovery)
+		{
+			connect(FDiscovery->instance(),SIGNAL(discoInfoReceived(const IDiscoInfo &)),SLOT(onDiscoveryInfoReceived(const IDiscoInfo &)));
+		}
 	}
 
 	plugin = APluginManager->pluginInterface("IXmppStreams").value(0);
@@ -217,7 +221,10 @@ void GmailNotify::setGmailReply(const Jid &AStreamJid, const IGmailReply &AReply
 				FRostersViewPlugin->rostersView()->removeIndexLabel(FRosterLabelId,stream);
 		}
 	}
-	FAccountReply.insert(AStreamJid.pBare(),AReply);
+	if (!AReply.resultTime.isEmpty())
+		FAccountReply.insert(AStreamJid.pBare(),AReply);
+	else
+		FAccountReply.remove(AStreamJid.pBare());
 	emit gmailReplyChanged(AStreamJid.pBare(),AReply);
 }
 
@@ -431,12 +438,22 @@ void GmailNotify::onXmppStreamOpened(IXmppStream *AXmppStream)
 	foreach(int notifyId, findAccountNotifies(AXmppStream->streamJid()))
 		FNotifications->removeNotification(notifyId);
 	setGmailReply(AXmppStream->streamJid(),IGmailReply());
-	checkNewMail(AXmppStream->streamJid(),true);
+	if (FDiscovery==NULL || !FDiscovery->requestDiscoInfo(AXmppStream->streamJid(),AXmppStream->streamJid().domain()))
+		checkNewMail(AXmppStream->streamJid(),true);
 }
 
 void GmailNotify::onXmppStreamClosed(IXmppStream *AXmppStream)
 {
 	removeStanzaHandler(AXmppStream->streamJid());
+}
+
+void GmailNotify::onDiscoveryInfoReceived(const IDiscoInfo &AInfo)
+{
+	if (AInfo.contactJid==AInfo.streamJid.domain() && AInfo.node.isEmpty())
+	{
+		if (!isSupported(AInfo.streamJid) && AInfo.features.contains(NS_GMAILNOTIFY))
+			checkNewMail(AInfo.streamJid,true);
+	}
 }
 
 void GmailNotify::onNotificationActivated(int ANotifyId)
