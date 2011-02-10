@@ -1,16 +1,20 @@
+#Plugin file name
+TARGET              = gmailnotify
 include(config.inc)
 
 #Project Configuration
-TARGET              = gmailnotify
 TEMPLATE            = lib
 CONFIG             += plugin
 QT                  = core gui xml
-LIBS               += -L$${SDK_BIN_PATH}/libs
 LIBS               += -l$${TARGET_UTILS}
-DEPENDPATH         += $${SDK_SRC_PATH}
-INCLUDEPATH        += $${SDK_SRC_PATH}
+LIBS               += -L$${VACUUM_LIB_PATH}
+DEPENDPATH         += $${VACUUM_SRC_PATH}
+INCLUDEPATH        += $${VACUUM_SRC_PATH}
+
+#Install
+include(install.inc)
 
 #Translation
-TRANSLATIONS        = ./translations/src/ru_RU/$${TARGET}.ts
+include(translations.inc)
 
 include(gmailnotify.pri)
