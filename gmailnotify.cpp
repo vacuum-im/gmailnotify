@@ -137,7 +137,14 @@ void GmailNotify::stanzaRequestResult(const Jid &AStreamJid, const Stanza &AStan
 		bool full = FMailRequests.take(AStanza.id());
 		if (AStanza.type() == "result")
 		{
-			insertStanzaHandler(AStreamJid);
+			if (!isSupported(AStreamJid))
+			{
+				Stanza enable("iq");
+				enable.setType("set").setId(FStanzaProcessor->newId());
+				enable.addElement("usersetting",NS_GOOGLESETTINGS).appendChild(enable.createElement("mailnotifications")).toElement().setAttribute("value","true");
+				FStanzaProcessor->sendStanzaOut(AStreamJid,enable);
+				insertStanzaHandler(AStreamJid);
+			}
 			processGmailReply(AStreamJid,parseGmailReply(AStanza),full);
 		}
 	}

@@ -3,6 +3,7 @@
 
 //Namespaces
 #define NS_GMAILNOTIFY                   "google:mail:notify"
+#define NS_GOOGLESETTINGS                "google:setting"
 
 //Notification Types
 #define NNT_GMAIL_NOTIFY                 "GMailNotify"
