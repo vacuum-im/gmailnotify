@@ -1,59 +1,36 @@
 #ifndef GMAILNOTIFY_H
 #define GMAILNOTIFY_H
 
+#include <igmailnotify.h>
+#include <definitions.h>
+
 #include <QUrl>
+#include <QPointer>
 #include <definitions/resources.h>
+#include <definitions/rosterindextyperole.h>
+#include <definitions/rosterlabelorders.h>
 #include <definitions/notificationdataroles.h>
 #include <interfaces/ipluginmanager.h>
 #include <interfaces/ixmppstreams.h>
 #include <interfaces/istanzaprocessor.h>
 #include <interfaces/iservicediscovery.h>
 #include <interfaces/inotifications.h>
+#include <interfaces/irostersview.h>
 #include <utils/iconstorage.h>
 #include <utils/stanza.h>
 #include <utils/options.h>
-
-#define GMAILNOTIFY_UUID "{ff4ab60b-60d1-45f3-942a-68dc80624408}"
-
-struct GmailSender
-{
-	QString name;
-	QString address;
-	bool originator;
-	bool unread;
-};
-
-struct GmailThread
-{
-	QString threadId;
-	int participation;
-	int messages;
-	qlonglong timestamp;
-	QUrl threadUrl;
-	QString labels;
-	QString subject;
-	QString snippet;
-	QList<GmailSender> senders;
-};
-
-struct GmailReply
-{
-	Jid streamJid;
-	QString resultTime;
-	int totalMatched;
-	int totalEstimate;
-	QUrl mailUrl;
-	QList<GmailThread> theads;
-};
+#include <utils/widgetmanager.h>
+#include "notifygmaildialog.h"
 
 class GmailNotify : 
 	public QObject,
 	public IPlugin,
+	public IGmailNotify,
 	public IStanzaHandler,
 	public IStanzaRequestOwner
 {
 	Q_OBJECT;
-	Q_INTERFACES(IPlugin IStanzaHandler IStanzaRequestOwner);
+	Q_INTERFACES(IPlugin IGmailNotify IStanzaHandler IStanzaRequestOwner);
 public:
 	GmailNotify();
 	~GmailNotify();
@@ -72,10 +49,18 @@ public:
 	virtual void stanzaRequestTimeout(const Jid &AStreamJid, const QString &AStanzaId);
 	//IGmailNotify
 	virtual bool isSupported(const Jid &AStreamJid) const;
+	virtual IGmailReply gmailReply(const Jid &AAccountJid) const;
+	virtual QDialog *showNotifyDialog(const Jid &AAccountJid);
+signals:
+	void gmailReplyChanged(const Jid AAccountJid, const IGmailReply &AReply);
 protected:
 	bool checkNewMail(const Jid &AStreamJid, bool AFull);
-	GmailReply parseGmailReply(const Stanza &AStanza) const;
-	void notifyGmailReply(const GmailReply &AReply, bool ATotal);
+	void setGmailReply(const Jid &AStreamJid, const IGmailReply &AReply);
+	IGmailReply parseGmailReply(const Stanza &AStanza) const;
+	QList<int> findAccountNotifies(const Jid &AAccountJid) const;
+	int findThreadNotify(const Jid &AAccountJid, const QString &AThreadId) const;
+	void processGmailReply(const Jid &AStreamJid, const IGmailReply &AReply, bool AFull);
+	void notifyGmailThreads(const Jid &AStreamJid, const QList<IGmailThread> &AThreads, bool ATotal);
 protected:
 	void registerDiscoFeatures();
 	void insertStanzaHandler(const Jid &AStreamJid);
@@ -85,16 +70,22 @@ protected slots:
 	void onXmppStreamClosed(IXmppStream *AXmppStream);
 	void onNotificationActivated(int ANotifyId);
 	void onNotificationRemoved(int ANotifyId);
+	void onRosterLabelClicked(IRosterIndex *AIndex, int ALabelId);
+	void onRosterLabelToolTips(IRosterIndex *AIndex, int ALabelId, QMultiMap<int,QString> &AToolTips);
 private:
 	IXmppStreams *FXmppStreams;
 	IServiceDiscovery *FDiscovery;
 	IStanzaProcessor *FStanzaProcessor;
 	INotifications *FNotifications;
+	IRostersViewPlugin *FRostersViewPlugin;
 private:
 	QMap<Jid,int> FSHIGmailNotify;
-private:
-	QMap<int,GmailReply> FNotifies;
 	QMap<QString,bool> FMailRequests;
+private:
+	int FRosterLabelId;
+	QMap<int,Jid> FNotifies;
+	QMap<Jid,IGmailReply> FAccountReply;
+	QMap<Jid,QPointer<NotifyGmailDialog> > FAccountDialog;
 };
 
 #endif // GMAILNOTIFY_H

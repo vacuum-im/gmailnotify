@@ -1,3 +1,7 @@
-HEADERS = gmailnotify.h
+FORMS = notifygmaildialog.ui
 
-SOURCES = gmailnotify.cpp
+HEADERS = gmailnotify.h \
+          notifygmaildialog.h
+
+SOURCES = gmailnotify.cpp \
+          notifygmaildialog.cpp

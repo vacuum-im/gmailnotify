@@ -39,5 +39,32 @@
             <numerusform>У вас %n новых непрочитанных сообщений</numerusform>
         </translation>
     </message>
+    <message numerus="yes">
+        <source>You have &lt;b&gt;%n unread letter(s)&lt;/b&gt;:</source>
+        <translation>
+            <numerusform>У вас &lt;b&gt;%n непрочитанное сообщение&lt;/b&gt;:</numerusform>
+            <numerusform>У вас &lt;b&gt;%n непрочитанных сообщения&lt;/b&gt;:</numerusform>
+            <numerusform>У вас &lt;b&gt;%n непрочитанных сообщений&lt;/b&gt;:</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>NotifyGmailDialog</name>
+    <message>
+        <source>Open web interface of Google Mail?</source>
+        <translation>Открыть веб интерфейс Google почты?</translation>
+    </message>
+    <message numerus="yes">
+        <source>You have &lt;b&gt;%n unread letter(s)&lt;/b&gt;:</source>
+        <translation>
+            <numerusform>У вас &lt;b&gt;%n непрочитанное сообщение&lt;/b&gt;:</numerusform>
+            <numerusform>У вас &lt;b&gt;%n непрочитанных сообщения&lt;/b&gt;:</numerusform>
+            <numerusform>У вас &lt;b&gt;%n непрочитанных сообщений&lt;/b&gt;:</numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>GMail Notify</source>
+        <translation>GMail уведомления</translation>
+    </message>
 </context>
 </TS>
