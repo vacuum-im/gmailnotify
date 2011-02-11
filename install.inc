@@ -25,9 +25,7 @@ win32 {
 target.path         = $$INSTALL_PLUGINS
 resources.path      = $$INSTALL_RESOURCES
 resources.files     = ./resources/*
-documents.path      = $$INSTALL_DOCUMENTS
-documents.files     = ./documents/*
-INSTALLS           += target resources documents
+INSTALLS           += target resources
 
 #MaxOS Install
 macx {
