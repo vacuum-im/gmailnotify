@@ -33,7 +33,7 @@ void GmailNotify::pluginInfo(IPluginInfo *APluginInfo)
 {
 	APluginInfo->name = tr("GMail Notifications");
 	APluginInfo->description = tr("Notify of new e-mails in Google Mail");
-	APluginInfo->version = "1.0.0";
+	APluginInfo->version = "1.0.1";
 	APluginInfo->author = "Potapov S.A. aka Lion";
 	APluginInfo->homePage = "http://code.google.com/p/vacuum-plugins";
 	APluginInfo->dependences.append(STANZAPROCESSOR_UUID);
@@ -105,8 +105,8 @@ bool GmailNotify::initObjects()
 	}
 	if (FNotifications)
 	{
-		uchar kindMask = INotification::PopupWindow|INotification::TrayIcon|INotification::PlaySound|INotification::AutoActivate;
-		uchar kindDefs = INotification::PopupWindow|INotification::TrayIcon|INotification::PlaySound;
+		ushort kindMask = INotification::PopupWindow|INotification::TrayNotify|INotification::SoundPlay|INotification::AutoActivate;
+		ushort kindDefs = INotification::PopupWindow|INotification::TrayNotify|INotification::SoundPlay;
 		FNotifications->registerNotificationType(NNT_GMAIL_NOTIFY,OWO_GMAIL_NOTIFY,tr("GMail Notifications"),kindMask,kindDefs);
 	}
 	if (FRostersViewPlugin)
