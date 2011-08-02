@@ -17,7 +17,7 @@ GmailNotify::GmailNotify()
 	FNotifications = NULL;
 	FRostersViewPlugin = NULL;
 
-	FRosterLabelId = -1;
+	FGmailLabelId = -1;
 
 #ifdef RESOURCES_DIR
 	FileStorage::setResourcesDirs(FileStorage::resourcesDirs() << (QDir::isAbsolutePath(RESOURCES_DIR) ? RESOURCES_DIR : qApp->applicationDirPath()+"/"+RESOURCES_DIR));
@@ -111,8 +111,10 @@ bool GmailNotify::initObjects()
 	}
 	if (FRostersViewPlugin)
 	{
-		QIcon icon = IconStorage::staticStorage(RSR_STORAGE_MENUICONS)->getIcon(MNI_GMAILNOTIFY_GMAIL);
-		FRosterLabelId = FRostersViewPlugin->rostersView()->createIndexLabel(RLO_GMAILNOTIFY,icon);
+		IRostersLabel label;
+		label.order = RLO_GMAILNOTIFY;
+		label.value = IconStorage::staticStorage(RSR_STORAGE_MENUICONS)->getIcon(MNI_GMAILNOTIFY_GMAIL);
+		FGmailLabelId = FRostersViewPlugin->rostersView()->registerLabel(label);
 	}
 	return true;
 }
@@ -223,9 +225,9 @@ void GmailNotify::setGmailReply(const Jid &AStreamJid, const IGmailReply &AReply
 		if (stream)
 		{
 			if (AReply.theads.count() > 0)
-				FRostersViewPlugin->rostersView()->insertIndexLabel(FRosterLabelId,stream);
+				FRostersViewPlugin->rostersView()->insertLabel(FGmailLabelId,stream);
 			else
-				FRostersViewPlugin->rostersView()->removeIndexLabel(FRosterLabelId,stream);
+				FRostersViewPlugin->rostersView()->removeLabel(FGmailLabelId,stream);
 		}
 	}
 	if (!AReply.resultTime.isEmpty())
@@ -481,7 +483,7 @@ void GmailNotify::onNotificationRemoved(int ANotifyId)
 
 void GmailNotify::onRosterLabelClicked(IRosterIndex *AIndex, int ALabelId)
 {
-	if (ALabelId == FRosterLabelId)
+	if (ALabelId == FGmailLabelId)
 	{
 		showNotifyDialog(AIndex->data(RDR_STREAM_JID).toString());
 	}
@@ -489,7 +491,7 @@ void GmailNotify::onRosterLabelClicked(IRosterIndex *AIndex, int ALabelId)
 
 void GmailNotify::onRosterLabelToolTips(IRosterIndex *AIndex, int ALabelId, QMultiMap<int,QString> &AToolTips)
 {
-	if (ALabelId == FRosterLabelId)
+	if (ALabelId == FGmailLabelId)
 	{
 		IGmailReply reply = gmailReply(AIndex->data(RDR_STREAM_JID).toString());
 		if (reply.theads.count() > 0)

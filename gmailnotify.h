@@ -83,7 +83,7 @@ private:
 	QMap<Jid,int> FSHIGmailNotify;
 	QMap<QString,bool> FMailRequests;
 private:
-	int FRosterLabelId;
+	int FGmailLabelId;
 	QMap<int,Jid> FNotifies;
 	QMap<Jid,IGmailReply> FAccountReply;
 	QMap<Jid,QPointer<NotifyGmailDialog> > FAccountDialog;
