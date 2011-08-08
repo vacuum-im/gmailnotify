@@ -105,9 +105,12 @@ bool GmailNotify::initObjects()
 	}
 	if (FNotifications)
 	{
-		ushort kindMask = INotification::PopupWindow|INotification::TrayNotify|INotification::SoundPlay|INotification::AutoActivate;
-		ushort kindDefs = INotification::PopupWindow|INotification::TrayNotify|INotification::SoundPlay;
-		FNotifications->registerNotificationType(NNT_GMAIL_NOTIFY,OWO_GMAIL_NOTIFY,tr("GMail Notifications"),kindMask,kindDefs);
+		INotificationType notifyType;
+		notifyType.order = NTO_GMAIL_NOTIFY;
+		notifyType.title = tr("When receiving a new message in google mail");
+		notifyType.kindMask = INotification::PopupWindow|INotification::TrayNotify|INotification::SoundPlay|INotification::AutoActivate;
+		notifyType.kindDefs = INotification::PopupWindow|INotification::TrayNotify|INotification::SoundPlay;
+		FNotifications->registerNotificationType(NNT_GMAIL_NOTIFY,notifyType);
 	}
 	if (FRostersViewPlugin)
 	{
@@ -380,7 +383,7 @@ void GmailNotify::notifyGmailThreads(const Jid &AStreamJid, const QList<IGmailTh
 	{
 		INotification notify;
 		notify.kinds = FNotifications->notificationKinds(NNT_GMAIL_NOTIFY);
-		notify.type = NNT_GMAIL_NOTIFY;
+		notify.typeId = NNT_GMAIL_NOTIFY;
 		if (notify.kinds > 0)
 		{
 			Jid notifyJid = AStreamJid.bare();

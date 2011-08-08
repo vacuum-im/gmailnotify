@@ -47,6 +47,10 @@
             <numerusform>Masz &amp;lt;b&amp;gt;%n nieprzeczytane wiadomości&amp;lt;/b?:</numerusform>
         </translation>
     </message>
+    <message>
+        <source>When receiving a new message in google mail</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>NotifyGmailDialog</name>

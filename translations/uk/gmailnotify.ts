@@ -47,6 +47,10 @@
             <numerusform>У вас &amp;lt;b&amp;gt;%n непрочитаних повідомлень&amp;lt;/b&amp;gt;:</numerusform>
         </translation>
     </message>
+    <message>
+        <source>When receiving a new message in google mail</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>NotifyGmailDialog</name>

@@ -8,8 +8,8 @@
 //Notification Types
 #define NNT_GMAIL_NOTIFY                 "GMailNotify"
 
-//Options Widget Orders
-#define OWO_GMAIL_NOTIFY                 275
+//Notification Type Orders
+#define NTO_GMAIL_NOTIFY                 275
 
 //Menu Icons
 #define MNI_GMAILNOTIFY_GMAIL            "gmailnotifyGmail"
