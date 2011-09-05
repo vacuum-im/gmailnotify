@@ -87,10 +87,10 @@ bool GmailNotify::initConnections(IPluginManager *APluginManager, int &AInitOrde
 		FRostersViewPlugin = qobject_cast<IRostersViewPlugin *>(plugin->instance());
 		if (FRostersViewPlugin)
 		{
-			connect(FRostersViewPlugin->rostersView()->instance(),SIGNAL(labelClicked(IRosterIndex *, int)),
-				SLOT(onRosterLabelClicked(IRosterIndex *, int)));
-			connect(FRostersViewPlugin->rostersView()->instance(),SIGNAL(labelToolTips(IRosterIndex *, int, QMultiMap<int,QString> &)),
-				SLOT(onRosterLabelToolTips(IRosterIndex *, int, QMultiMap<int,QString> &)));
+			connect(FRostersViewPlugin->rostersView()->instance(),SIGNAL(indexClicked(IRosterIndex *, int)),
+				SLOT(onRosterIndexClicked(IRosterIndex *, int)));
+			connect(FRostersViewPlugin->rostersView()->instance(),SIGNAL(indexToolTips(IRosterIndex *, int, QMultiMap<int,QString> &)),
+				SLOT(onRosterIndexToolTips(IRosterIndex *, int, QMultiMap<int,QString> &)));
 		}
 	}
 
@@ -484,7 +484,7 @@ void GmailNotify::onNotificationRemoved(int ANotifyId)
 	}
 }
 
-void GmailNotify::onRosterLabelClicked(IRosterIndex *AIndex, int ALabelId)
+void GmailNotify::onRosterIndexClicked(IRosterIndex *AIndex, int ALabelId)
 {
 	if (ALabelId == FGmailLabelId)
 	{
@@ -492,7 +492,7 @@ void GmailNotify::onRosterLabelClicked(IRosterIndex *AIndex, int ALabelId)
 	}
 }
 
-void GmailNotify::onRosterLabelToolTips(IRosterIndex *AIndex, int ALabelId, QMultiMap<int,QString> &AToolTips)
+void GmailNotify::onRosterIndexToolTips(IRosterIndex *AIndex, int ALabelId, QMultiMap<int,QString> &AToolTips)
 {
 	if (ALabelId == FGmailLabelId)
 	{

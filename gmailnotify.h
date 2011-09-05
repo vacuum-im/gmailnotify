@@ -71,8 +71,8 @@ protected slots:
 	void onDiscoveryInfoReceived(const IDiscoInfo &AInfo);
 	void onNotificationActivated(int ANotifyId);
 	void onNotificationRemoved(int ANotifyId);
-	void onRosterLabelClicked(IRosterIndex *AIndex, int ALabelId);
-	void onRosterLabelToolTips(IRosterIndex *AIndex, int ALabelId, QMultiMap<int,QString> &AToolTips);
+	void onRosterIndexClicked(IRosterIndex *AIndex, int ALabelId);
+	void onRosterIndexToolTips(IRosterIndex *AIndex, int ALabelId, QMultiMap<int,QString> &AToolTips);
 private:
 	IXmppStreams *FXmppStreams;
 	IServiceDiscovery *FDiscovery;
