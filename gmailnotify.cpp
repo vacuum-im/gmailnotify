@@ -125,11 +125,10 @@ bool GmailNotify::initObjects()
 
 bool GmailNotify::stanzaReadWrite(int AHandleId, const Jid &AStreamJid, Stanza &AStanza, bool &AAccept)
 {
-	if (FSHIGmailNotify.value(AStreamJid)==AHandleId && AStreamJid==AStanza.from())
+	if (FSHIGmailNotify.value(AStreamJid)==AHandleId && AStanza.isFromServer())
 	{
 		AAccept = true;
-		Stanza reply("iq");
-		reply.setType("result").setId(AStanza.id());
+		Stanza reply = FStanzaProcessor->makeReplyResult(AStanza);
 		FStanzaProcessor->sendStanzaOut(AStreamJid,reply);
 		checkNewMail(AStreamJid,true);
 	}
@@ -153,15 +152,6 @@ void GmailNotify::stanzaRequestResult(const Jid &AStreamJid, const Stanza &AStan
 			}
 			processGmailReply(AStreamJid,parseGmailReply(AStanza),full);
 		}
-	}
-}
-
-void GmailNotify::stanzaRequestTimeout(const Jid &AStreamJid, const QString &AStanzaId)
-{
-	if (FMailRequests.contains(AStanzaId))
-	{
-		FMailRequests.remove(AStanzaId);
-		checkNewMail(AStreamJid,true);
 	}
 }
 

@@ -46,7 +46,6 @@ public:
 	virtual bool stanzaReadWrite(int AHandleId, const Jid &AStreamJid, Stanza &AStanza, bool &AAccept);
 	//IStanzaRequestOwner
 	virtual void stanzaRequestResult(const Jid &AStreamJid, const Stanza &AStanza);
-	virtual void stanzaRequestTimeout(const Jid &AStreamJid, const QString &AStanzaId);
 	//IGmailNotify
 	virtual bool isSupported(const Jid &AStreamJid) const;
 	virtual IGmailReply gmailReply(const Jid &AAccountJid) const;
