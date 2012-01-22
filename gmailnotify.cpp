@@ -373,7 +373,7 @@ void GmailNotify::notifyGmailThreads(const Jid &AStreamJid, const QList<IGmailTh
 	if (FNotifications && AThreads.count()>0)
 	{
 		INotification notify;
-		notify.kinds = FNotifications->notificationKinds(NNT_GMAIL_NOTIFY);
+		notify.kinds = FNotifications->enabledTypeNotificationKinds(NNT_GMAIL_NOTIFY);
 		notify.typeId = NNT_GMAIL_NOTIFY;
 		if (notify.kinds > 0)
 		{
