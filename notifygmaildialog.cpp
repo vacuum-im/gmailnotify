@@ -11,7 +11,7 @@ NotifyGmailDialog::NotifyGmailDialog(const Jid &AAccountJid, QWidget *AParent) :
 	IconStorage::staticStorage(RSR_STORAGE_MENUICONS)->insertAutoIcon(this,MNI_GMAILNOTIFY_GMAIL,0,0,"windowIcon");
 
 	setWindowTitle(tr("GMail Notify"));
-	ui.lblAccount->setText(QString("<b>%1</b>").arg(AAccountJid.bare()));
+	ui.lblAccount->setText(QString("<b>%1</b>").arg(AAccountJid.uBare()));
 
 	connect(ui.dbbButtons,SIGNAL(accepted()),SLOT(onDialogAccepted()));
 	connect(ui.dbbButtons,SIGNAL(rejected()),SLOT(onDialogRejected()));
