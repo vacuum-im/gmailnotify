@@ -379,11 +379,11 @@ void GmailNotify::notifyGmailThreads(const Jid &AStreamJid, const QList<IGmailTh
 		{
 			Jid notifyJid = AStreamJid.bare();
 			notify.data.insert(NDR_ICON,IconStorage::staticStorage(RSR_STORAGE_MENUICONS)->getIcon(MNI_GMAILNOTIFY_GMAIL));
-			notify.data.insert(NDR_TOOLTIP,tr("New e-mail for %1").arg(AStreamJid.bare()));
+			notify.data.insert(NDR_TOOLTIP,tr("New e-mail for %1").arg(AStreamJid.uBare()));
 			if (ATotal || AThreads.count()>MAX_SEPARATE_NOTIFIES)
 			{
 				notify.data.insert(NDR_POPUP_CAPTION,tr("New e-mail"));
-				notify.data.insert(NDR_POPUP_TITLE,AStreamJid.bare());
+				notify.data.insert(NDR_POPUP_TITLE,AStreamJid.uBare());
 				if (ATotal)
 					notify.data.insert(NDR_POPUP_HTML,Qt::escape(tr("You have %n unread message(s)","",AThreads.count())));
 				else
@@ -395,7 +395,7 @@ void GmailNotify::notifyGmailThreads(const Jid &AStreamJid, const QList<IGmailTh
 				IGmailThread gthread = AThreads.value(i);
 				IGmailSender sender = gthread.senders.value(0);
 				notifyJid.setResource(gthread.threadId);
-				notify.data.insert(NDR_POPUP_CAPTION,tr("New e-mail for %1").arg(AStreamJid.bare()));
+				notify.data.insert(NDR_POPUP_CAPTION,tr("New e-mail for %1").arg(AStreamJid.uBare()));
 				notify.data.insert(NDR_POPUP_TITLE,!sender.name.isEmpty() ? QString("%1 <%2>").arg(sender.name).arg(sender.address) : sender.address);
 				notify.data.insert(NDR_POPUP_HTML,Qt::escape(gthread.subject + " - " + gthread.snippet));
 				FNotifies.insert(FNotifications->appendNotification(notify),notifyJid);
