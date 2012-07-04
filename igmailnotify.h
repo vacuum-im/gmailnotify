@@ -47,7 +47,7 @@ public:
 	virtual IGmailReply gmailReply(const Jid &AAccountJid) const =0;
 	virtual QDialog *showNotifyDialog(const Jid &AAccountJid) =0;
 signals:
-	virtual void gmailReplyChanged(const Jid AAccountJid, const IGmailReply &AReply) =0;
+	virtual void gmailReplyChanged(const Jid &AAccountJid, const IGmailReply &AReply) =0;
 };
 
 Q_DECLARE_INTERFACE(IGmailNotify,"Vacuum.ExternalPlugin.IGmailNotify/1.0")

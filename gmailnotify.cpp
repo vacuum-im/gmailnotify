@@ -33,7 +33,7 @@ void GmailNotify::pluginInfo(IPluginInfo *APluginInfo)
 {
 	APluginInfo->name = tr("GMail Notifications");
 	APluginInfo->description = tr("Notify of new e-mails in Google Mail");
-	APluginInfo->version = "1.0.2";
+	APluginInfo->version = "1.0.3";
 	APluginInfo->author = "Potapov S.A. aka Lion";
 	APluginInfo->homePage = "http://code.google.com/p/vacuum-plugins";
 	APluginInfo->dependences.append(STANZAPROCESSOR_UUID);
@@ -282,7 +282,7 @@ IGmailReply GmailNotify::parseGmailReply(const Stanza &AStanza) const
 QList<int> GmailNotify::findAccountNotifies(const Jid &AAccountJid) const
 {
 	QList<int> notifies;
-	for (QMap<int,Jid>::const_iterator it = FNotifies.constBegin(); it!=FNotifies.constEnd(); it++)
+	for (QMap<int,Jid>::const_iterator it = FNotifies.constBegin(); it!=FNotifies.constEnd(); ++it)
 	{
 		if (it.value() && AAccountJid)
 			notifies.append(it.key());
@@ -292,7 +292,7 @@ QList<int> GmailNotify::findAccountNotifies(const Jid &AAccountJid) const
 
 int GmailNotify::findThreadNotify(const Jid &AAccountJid, const QString &AThreadId) const
 {
-	for (QMap<int,Jid>::const_iterator it = FNotifies.constBegin(); it!=FNotifies.constEnd(); it++)
+	for (QMap<int,Jid>::const_iterator it = FNotifies.constBegin(); it!=FNotifies.constEnd(); ++it)
 	{
 		if ((it.value() && AAccountJid) && it.value().resource()==AThreadId)
 			return it.key();

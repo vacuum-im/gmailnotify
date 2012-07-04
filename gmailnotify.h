@@ -51,7 +51,7 @@ public:
 	virtual IGmailReply gmailReply(const Jid &AAccountJid) const;
 	virtual QDialog *showNotifyDialog(const Jid &AAccountJid);
 signals:
-	void gmailReplyChanged(const Jid AAccountJid, const IGmailReply &AReply);
+	void gmailReplyChanged(const Jid &AAccountJid, const IGmailReply &AReply);
 protected:
 	bool checkNewMail(const Jid &AStreamJid, bool AFull);
 	void setGmailReply(const Jid &AStreamJid, const IGmailReply &AReply);
