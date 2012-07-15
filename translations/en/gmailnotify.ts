@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" sourcelanguage="en">
+<TS version="2.0" language="en" sourcelanguage="en">
 <context>
     <name>GmailNotify</name>
     <message>
@@ -27,11 +27,13 @@
         <source>You have %n unread message(s)</source>
         <translation>
             <numerusform>You have %n unread message(s)</numerusform>
+            <numerusform>You have %n unread message(s)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>You have %n new unread message(s)</source>
         <translation>
+            <numerusform>You have %n new unread message(s)</numerusform>
             <numerusform>You have %n new unread message(s)</numerusform>
         </translation>
     </message>
@@ -42,6 +44,7 @@
     <message numerus="yes">
         <source>You have &lt;b&gt;%n unread letter(s)&lt;/b&gt;:</source>
         <translation>
+            <numerusform>You have &lt;b&gt;%n unread letter(s)&lt;/b&gt;:</numerusform>
             <numerusform>You have &lt;b&gt;%n unread letter(s)&lt;/b&gt;:</numerusform>
         </translation>
     </message>
@@ -59,6 +62,7 @@
     <message numerus="yes">
         <source>You have &lt;b&gt;%n unread letter(s)&lt;/b&gt;:</source>
         <translation>
+            <numerusform>You have &lt;b&gt;%n unread letter(s)&lt;/b&gt;:</numerusform>
             <numerusform>You have &lt;b&gt;%n unread letter(s)&lt;/b&gt;:</numerusform>
         </translation>
     </message>
