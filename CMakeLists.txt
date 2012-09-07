@@ -11,7 +11,7 @@ set(UIS notifygmaildialog.ui)
 include_directories("${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}")
 
 include("${CMAKE_SOURCE_DIR}/cmake/config.cmake")
-include("${CMAKE_SOURCE_DIR}/cmake/translations.cmake")
+include("${CMAKE_SOURCE_DIR}/translations/languages.cmake")
 include("${CMAKE_SOURCE_DIR}/cmake/plugin.cmake")
 
 install(DIRECTORY "resources/menuicons"
