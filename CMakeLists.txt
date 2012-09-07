@@ -8,8 +8,6 @@ set(HEADERS igmailnotify.h definitions.h notifygmaildialog.h gmailnotify.h)
 set(MOC_HEADERS notifygmaildialog.h gmailnotify.h)
 set(UIS notifygmaildialog.ui)
 
-set(LOCALIZED_LANGS "ru;pl;de;uk")
-
 include_directories("${CMAKE_SOURCE_DIR}" "${CMAKE_BINARY_DIR}")
 
 include("${CMAKE_SOURCE_DIR}/cmake/config.cmake")
