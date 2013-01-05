@@ -1,6 +1,7 @@
 #include "gmailnotify.h"
 
 #include <QDir>
+#include <QMouseEvent>
 #include <QApplication>
 #include <QTextDocument>
 
@@ -33,7 +34,7 @@ void GmailNotify::pluginInfo(IPluginInfo *APluginInfo)
 {
 	APluginInfo->name = tr("GMail Notifications");
 	APluginInfo->description = tr("Notify of new e-mails in Google Mail");
-	APluginInfo->version = "1.0.3";
+	APluginInfo->version = "1.0.4";
 	APluginInfo->author = "Potapov S.A. aka Lion";
 	APluginInfo->homePage = "http://code.google.com/p/vacuum-plugins";
 	APluginInfo->dependences.append(STANZAPROCESSOR_UUID);
@@ -87,10 +88,8 @@ bool GmailNotify::initConnections(IPluginManager *APluginManager, int &AInitOrde
 		FRostersViewPlugin = qobject_cast<IRostersViewPlugin *>(plugin->instance());
 		if (FRostersViewPlugin)
 		{
-			connect(FRostersViewPlugin->rostersView()->instance(),SIGNAL(indexClicked(IRosterIndex *, int)),
-				SLOT(onRosterIndexClicked(IRosterIndex *, int)));
-			connect(FRostersViewPlugin->rostersView()->instance(),SIGNAL(indexToolTips(IRosterIndex *, int, QMultiMap<int,QString> &)),
-				SLOT(onRosterIndexToolTips(IRosterIndex *, int, QMultiMap<int,QString> &)));
+			connect(FRostersViewPlugin->rostersView()->instance(),SIGNAL(indexToolTips(IRosterIndex *, quint32, QMap<int,QString> &)),
+				SLOT(onRosterIndexToolTips(IRosterIndex *, quint32, QMap<int,QString> &)));
 		}
 	}
 
@@ -115,10 +114,12 @@ bool GmailNotify::initObjects()
 	}
 	if (FRostersViewPlugin)
 	{
-		IRostersLabel label;
-		label.order = RLO_GMAILNOTIFY;
-		label.value = IconStorage::staticStorage(RSR_STORAGE_MENUICONS)->getIcon(MNI_GMAILNOTIFY_GMAIL);
-		FGmailLabelId = FRostersViewPlugin->rostersView()->registerLabel(label);
+		AdvancedDelegateItem notifyLabel(RLID_GMAILNOTIFY);
+		notifyLabel.d->kind = AdvancedDelegateItem::CustomData;
+		notifyLabel.d->data = IconStorage::staticStorage(RSR_STORAGE_MENUICONS)->getIcon(MNI_GMAILNOTIFY_GMAIL);
+		FGmailLabelId = FRostersViewPlugin->rostersView()->registerLabel(notifyLabel);
+
+		FRostersViewPlugin->rostersView()->insertClickHooker(RCHO_GMAILNOTIFY,this);
 	}
 	return true;
 }
@@ -153,6 +154,26 @@ void GmailNotify::stanzaRequestResult(const Jid &AStreamJid, const Stanza &AStan
 			processGmailReply(AStreamJid,parseGmailReply(AStanza),full);
 		}
 	}
+}
+
+bool GmailNotify::rosterIndexSingleClicked(int AOrder, IRosterIndex *AIndex, const QMouseEvent *AEvent)
+{
+	if (AOrder==RCHO_GMAILNOTIFY && AIndex->data(RDR_TYPE).toInt()==RIT_STREAM_ROOT)
+	{
+		QModelIndex index = FRostersViewPlugin->rostersView()->mapFromModel(FRostersViewPlugin->rostersView()->rostersModel()->modelIndexByRosterIndex(AIndex));
+		if (FRostersViewPlugin->rostersView()->labelAt(AEvent->pos(),index) == FGmailLabelId)
+		{
+			showNotifyDialog(AIndex->data(RDR_STREAM_JID).toString());
+			return true;
+		}
+	}
+	return false;
+}
+
+bool GmailNotify::rosterIndexDoubleClicked(int AOrder, IRosterIndex *AIndex, const QMouseEvent *AEvent)
+{
+	Q_UNUSED(AOrder); Q_UNUSED(AIndex); Q_UNUSED(AEvent);
+	return false;
 }
 
 bool GmailNotify::isSupported(const Jid &AStreamJid) const
@@ -475,15 +496,7 @@ void GmailNotify::onNotificationRemoved(int ANotifyId)
 	}
 }
 
-void GmailNotify::onRosterIndexClicked(IRosterIndex *AIndex, int ALabelId)
-{
-	if (ALabelId == FGmailLabelId)
-	{
-		showNotifyDialog(AIndex->data(RDR_STREAM_JID).toString());
-	}
-}
-
-void GmailNotify::onRosterIndexToolTips(IRosterIndex *AIndex, int ALabelId, QMultiMap<int,QString> &AToolTips)
+void GmailNotify::onRosterIndexToolTips(IRosterIndex *AIndex, quint32 ALabelId, QMap<int,QString> &AToolTips)
 {
 	if (ALabelId == FGmailLabelId)
 	{

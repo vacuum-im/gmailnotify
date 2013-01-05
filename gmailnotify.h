@@ -1,14 +1,13 @@
 #ifndef GMAILNOTIFY_H
 #define GMAILNOTIFY_H
 
-#include <igmailnotify.h>
-#include <definitions.h>
+#include "igmailnotify.h"
+#include "definitions.h"
 
 #include <QUrl>
 #include <QPointer>
 #include <definitions/resources.h>
 #include <definitions/rosterindextyperole.h>
-#include <definitions/rosterlabelorders.h>
 #include <definitions/notificationdataroles.h>
 #include <interfaces/ipluginmanager.h>
 #include <interfaces/ixmppstreams.h>
@@ -16,10 +15,11 @@
 #include <interfaces/iservicediscovery.h>
 #include <interfaces/inotifications.h>
 #include <interfaces/irostersview.h>
-#include <utils/iconstorage.h>
 #include <utils/stanza.h>
 #include <utils/options.h>
+#include <utils/iconstorage.h>
 #include <utils/widgetmanager.h>
+#include <utils/advanceditemdelegate.h>
 #include "notifygmaildialog.h"
 
 class GmailNotify : 
@@ -27,10 +27,11 @@ class GmailNotify :
 	public IPlugin,
 	public IGmailNotify,
 	public IStanzaHandler,
-	public IStanzaRequestOwner
+	public IStanzaRequestOwner,
+	public IRostersClickHooker
 {
 	Q_OBJECT;
-	Q_INTERFACES(IPlugin IGmailNotify IStanzaHandler IStanzaRequestOwner);
+	Q_INTERFACES(IPlugin IGmailNotify IStanzaHandler IStanzaRequestOwner IRostersClickHooker);
 public:
 	GmailNotify();
 	~GmailNotify();
@@ -46,6 +47,9 @@ public:
 	virtual bool stanzaReadWrite(int AHandleId, const Jid &AStreamJid, Stanza &AStanza, bool &AAccept);
 	//IStanzaRequestOwner
 	virtual void stanzaRequestResult(const Jid &AStreamJid, const Stanza &AStanza);
+	//IRostersClickHooker
+	virtual bool rosterIndexSingleClicked(int AOrder, IRosterIndex *AIndex, const QMouseEvent *AEvent);
+	virtual bool rosterIndexDoubleClicked(int AOrder, IRosterIndex *AIndex, const QMouseEvent *AEvent);
 	//IGmailNotify
 	virtual bool isSupported(const Jid &AStreamJid) const;
 	virtual IGmailReply gmailReply(const Jid &AAccountJid) const;
@@ -70,8 +74,7 @@ protected slots:
 	void onDiscoveryInfoReceived(const IDiscoInfo &AInfo);
 	void onNotificationActivated(int ANotifyId);
 	void onNotificationRemoved(int ANotifyId);
-	void onRosterIndexClicked(IRosterIndex *AIndex, int ALabelId);
-	void onRosterIndexToolTips(IRosterIndex *AIndex, int ALabelId, QMultiMap<int,QString> &AToolTips);
+	void onRosterIndexToolTips(IRosterIndex *AIndex, quint32 ALabelId, QMap<int,QString> &AToolTips);
 private:
 	IXmppStreams *FXmppStreams;
 	IServiceDiscovery *FDiscovery;
@@ -82,7 +85,7 @@ private:
 	QMap<Jid,int> FSHIGmailNotify;
 	QMap<QString,bool> FMailRequests;
 private:
-	int FGmailLabelId;
+	quint32 FGmailLabelId;
 	QMap<int,Jid> FNotifies;
 	QMap<Jid,IGmailReply> FAccountReply;
 	QMap<Jid,QPointer<NotifyGmailDialog> > FAccountDialog;

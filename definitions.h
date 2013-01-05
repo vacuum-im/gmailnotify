@@ -20,10 +20,13 @@
 #define OPV_GMAILNOTIFY_ACCOUNT_LASTTID  "gmail-notify.account.last-tid"
 #define OPV_GMAILNOTIFY_ACCOUNT_LASTTIME "gmail-notify.account.last-time"
 
-//Roster Label Order
-#define RLO_GMAILNOTIFY                  RLAP_RIGHT_TOP + 400
+//Roster Labels
+#define RLID_GMAILNOTIFY                  AdvancedDelegateItem::makeId(AdvancedDelegateItem::MiddleCenter,128,AdvancedDelegateItem::AlignRightOrderMask | 444)
 
 //Roster ToolTip Order
-#define RTTO_GMAILNOTIFY                 500
+#define RTTO_GMAILNOTIFY                 555
+
+//Roster Click Hooker Orders
+#define RCHO_GMAILNOTIFY                 1000
 
 #endif //DEF_DEFINITIONS_H
