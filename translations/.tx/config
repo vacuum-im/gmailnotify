@@ -1,5 +1,5 @@
 [main]
-host = http://www.transifex.net
+host = https://www.transifex.com
 
 [vacuum-im.gmailnotifyts]
 file_filter = <lang>/gmailnotify.ts
