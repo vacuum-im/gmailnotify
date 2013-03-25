@@ -7,7 +7,8 @@
 #include <QUrl>
 #include <QPointer>
 #include <definitions/resources.h>
-#include <definitions/rosterindextyperole.h>
+#include <definitions/rosterindexkinds.h>
+#include <definitions/rosterindexroles.h>
 #include <definitions/notificationdataroles.h>
 #include <interfaces/ipluginmanager.h>
 #include <interfaces/ixmppstreams.h>
@@ -74,7 +75,7 @@ protected slots:
 	void onDiscoveryInfoReceived(const IDiscoInfo &AInfo);
 	void onNotificationActivated(int ANotifyId);
 	void onNotificationRemoved(int ANotifyId);
-	void onRosterIndexToolTips(IRosterIndex *AIndex, quint32 ALabelId, QMap<int,QString> &AToolTips);
+	void onRostersViewIndexToolTips(IRosterIndex *AIndex, quint32 ALabelId, QMap<int,QString> &AToolTips);
 private:
 	IXmppStreams *FXmppStreams;
 	IServiceDiscovery *FDiscovery;

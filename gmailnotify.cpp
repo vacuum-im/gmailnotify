@@ -89,7 +89,7 @@ bool GmailNotify::initConnections(IPluginManager *APluginManager, int &AInitOrde
 		if (FRostersViewPlugin)
 		{
 			connect(FRostersViewPlugin->rostersView()->instance(),SIGNAL(indexToolTips(IRosterIndex *, quint32, QMap<int,QString> &)),
-				SLOT(onRosterIndexToolTips(IRosterIndex *, quint32, QMap<int,QString> &)));
+				SLOT(onRostersViewIndexToolTips(IRosterIndex *, quint32, QMap<int,QString> &)));
 		}
 	}
 
@@ -158,9 +158,9 @@ void GmailNotify::stanzaRequestResult(const Jid &AStreamJid, const Stanza &AStan
 
 bool GmailNotify::rosterIndexSingleClicked(int AOrder, IRosterIndex *AIndex, const QMouseEvent *AEvent)
 {
-	if (AOrder==RCHO_GMAILNOTIFY && AIndex->data(RDR_TYPE).toInt()==RIT_STREAM_ROOT)
+	if (AOrder == RCHO_GMAILNOTIFY)
 	{
-		QModelIndex index = FRostersViewPlugin->rostersView()->mapFromModel(FRostersViewPlugin->rostersView()->rostersModel()->modelIndexByRosterIndex(AIndex));
+		QModelIndex index = FRostersViewPlugin->rostersView()->mapFromModel(FRostersViewPlugin->rostersView()->rostersModel()->modelIndexFromRosterIndex(AIndex));
 		if (FRostersViewPlugin->rostersView()->labelAt(AEvent->pos(),index) == FGmailLabelId)
 		{
 			showNotifyDialog(AIndex->data(RDR_STREAM_JID).toString());
@@ -236,7 +236,7 @@ void GmailNotify::setGmailReply(const Jid &AStreamJid, const IGmailReply &AReply
 {
 	if (FRostersViewPlugin && FRostersViewPlugin->rostersView()->rostersModel())
 	{
-		IRosterIndex *stream = FRostersViewPlugin->rostersView()->rostersModel()->streamRoot(AStreamJid);
+		IRosterIndex *stream = FRostersViewPlugin->rostersView()->rostersModel()->streamIndex(AStreamJid);
 		if (stream)
 		{
 			if (AReply.theads.count() > 0)
@@ -496,7 +496,7 @@ void GmailNotify::onNotificationRemoved(int ANotifyId)
 	}
 }
 
-void GmailNotify::onRosterIndexToolTips(IRosterIndex *AIndex, quint32 ALabelId, QMap<int,QString> &AToolTips)
+void GmailNotify::onRostersViewIndexToolTips(IRosterIndex *AIndex, quint32 ALabelId, QMap<int,QString> &AToolTips)
 {
 	if (ALabelId == FGmailLabelId)
 	{
