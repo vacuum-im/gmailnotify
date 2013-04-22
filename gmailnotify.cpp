@@ -20,8 +20,8 @@ GmailNotify::GmailNotify()
 
 	FGmailLabelId = -1;
 
-#ifdef RESOURCES_DIR
-	FileStorage::setResourcesDirs(FileStorage::resourcesDirs() << (QDir::isAbsolutePath(RESOURCES_DIR) ? RESOURCES_DIR : qApp->applicationDirPath()+"/"+RESOURCES_DIR));
+#ifdef DEBUG_RESOURCES_DIR
+	FileStorage::setResourcesDirs(FileStorage::resourcesDirs() << DEBUG_RESOURCES_DIR);
 #endif
 }
 
