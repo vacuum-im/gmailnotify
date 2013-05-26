@@ -48,6 +48,10 @@
             <numerusform>You have &lt;b&gt;%n unread letter(s)&lt;/b&gt;:</numerusform>
         </translation>
     </message>
+    <message>
+        <source>&lt;no subject&gt;</source>
+        <translation>&lt;no subject&gt;</translation>
+    </message>
 </context>
 <context>
     <name>NotifyGmailDialog</name>

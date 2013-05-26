@@ -51,6 +51,10 @@
         <source>When receiving a new message in google mail</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&lt;no subject&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>NotifyGmailDialog</name>

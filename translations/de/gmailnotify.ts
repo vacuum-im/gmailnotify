@@ -41,6 +41,14 @@
             <numerusform></numerusform>
         </translation>
     </message>
+    <message>
+        <source>When receiving a new message in google mail</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;no subject&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>NotifyGmailDialog</name>
@@ -53,6 +61,10 @@
         <translation type="unfinished">
             <numerusform></numerusform>
         </translation>
+    </message>
+    <message>
+        <source>Open web interface of Google Mail?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

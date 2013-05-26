@@ -51,6 +51,10 @@
         <source>When receiving a new message in google mail</source>
         <translation>При получении нового сообщения в гугл-почте</translation>
     </message>
+    <message>
+        <source>&lt;no subject&gt;</source>
+        <translation>&lt;без темы&gt;</translation>
+    </message>
 </context>
 <context>
     <name>NotifyGmailDialog</name>

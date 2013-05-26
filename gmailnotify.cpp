@@ -277,6 +277,8 @@ IGmailReply GmailNotify::parseGmailReply(const Stanza &AStanza) const
 			gthread.threadUrl = theadElem.attribute("url");
 			gthread.labels = theadElem.firstChildElement("labels").text();
 			gthread.subject = theadElem.firstChildElement("subject").text();
+			if (gthread.subject.isEmpty())
+				gthread.subject = tr("<no subject>");
 			gthread.snippet = theadElem.firstChildElement("snippet").text();
 
 			QDomElement senderElem = theadElem.firstChildElement("senders").firstChildElement("sender");
