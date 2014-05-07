@@ -34,7 +34,7 @@ void GmailNotify::pluginInfo(IPluginInfo *APluginInfo)
 {
 	APluginInfo->name = tr("GMail Notifications");
 	APluginInfo->description = tr("Notify of new e-mails in Google Mail");
-	APluginInfo->version = "1.0.4";
+	APluginInfo->version = "1.0.5";
 	APluginInfo->author = "Potapov S.A. aka Lion";
 	APluginInfo->homePage = "http://code.google.com/p/vacuum-plugins";
 	APluginInfo->dependences.append(STANZAPROCESSOR_UUID);

@@ -46,6 +46,14 @@ CHANGELOG
 =========
   LEGEND: [+]-New feature [*]-Enhancement [-]-Bug fix
 
+  v1.0.4
+  ------
+  [*] Fixed a bug when an empty email subject.
+  
+  v1.0.4
+  ------
+  [*] Vacuum-IM SDK updates support.
+  
   v1.0.3
   ------
   [*] Changes based on the analysis code by PVS-Studio.
