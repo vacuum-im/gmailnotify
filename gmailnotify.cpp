@@ -13,7 +13,7 @@
 GmailNotify::GmailNotify()
 {
 	FDiscovery = NULL;
-	FXmppStreams= NULL;
+	FXmppStreamManager= NULL;
 	FStanzaProcessor = NULL;
 	FNotifications = NULL;
 	FRostersViewPlugin = NULL;
@@ -60,14 +60,14 @@ bool GmailNotify::initConnections(IPluginManager *APluginManager, int &AInitOrde
 		}
 	}
 
-	plugin = APluginManager->pluginInterface("IXmppStreams").value(0);
+	plugin = APluginManager->pluginInterface("IXmppStreamManager").value(0);
 	if (plugin)
 	{
-		FXmppStreams = qobject_cast<IXmppStreams *>(plugin->instance());
-		if (FXmppStreams)
+		FXmppStreamManager = qobject_cast<IXmppStreamManager *>(plugin->instance());
+		if (FXmppStreamManager)
 		{
-			connect(FXmppStreams->instance(),SIGNAL(opened(IXmppStream *)),SLOT(onXmppStreamOpened(IXmppStream *)));
-			connect(FXmppStreams->instance(),SIGNAL(closed(IXmppStream *)),SLOT(onXmppStreamClosed(IXmppStream *)));
+			connect(FXmppStreamManager->instance(),SIGNAL(streamOpened(IXmppStream *)),SLOT(onXmppStreamOpened(IXmppStream *)));
+			connect(FXmppStreamManager->instance(),SIGNAL(streamClosed(IXmppStream *)),SLOT(onXmppStreamClosed(IXmppStream *)));
 		}
 	}
 
@@ -454,9 +454,7 @@ void GmailNotify::insertStanzaHandler(const Jid &AStreamJid)
 void GmailNotify::removeStanzaHandler(const Jid &AStreamJid)
 {
 	if (FStanzaProcessor)
-	{
 		FStanzaProcessor->removeStanzaHandle(FSHIGmailNotify.take(AStreamJid));
-	}
 }
 
 void GmailNotify::onXmppStreamOpened(IXmppStream *AXmppStream)
@@ -464,7 +462,8 @@ void GmailNotify::onXmppStreamOpened(IXmppStream *AXmppStream)
 	foreach(int notifyId, findAccountNotifies(AXmppStream->streamJid()))
 		FNotifications->removeNotification(notifyId);
 	setGmailReply(AXmppStream->streamJid(),IGmailReply());
-	if (FDiscovery==NULL || !FDiscovery->requestDiscoInfo(AXmppStream->streamJid(),AXmppStream->streamJid().domain()))
+
+	if (FDiscovery == NULL)
 		checkNewMail(AXmppStream->streamJid(),true);
 }
 
@@ -485,17 +484,13 @@ void GmailNotify::onDiscoveryInfoReceived(const IDiscoInfo &AInfo)
 void GmailNotify::onNotificationActivated(int ANotifyId)
 {
 	if (FNotifies.contains(ANotifyId))
-	{
 		showNotifyDialog(FNotifies.value(ANotifyId));
-	}
 }
 
 void GmailNotify::onNotificationRemoved(int ANotifyId)
 {
 	if (FNotifies.contains(ANotifyId))
-	{
 		FNotifies.remove(ANotifyId);
-	}
 }
 
 void GmailNotify::onRostersViewIndexToolTips(IRosterIndex *AIndex, quint32 ALabelId, QMap<int,QString> &AToolTips)

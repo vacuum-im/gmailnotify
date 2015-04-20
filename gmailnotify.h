@@ -11,7 +11,7 @@
 #include <definitions/rosterindexroles.h>
 #include <definitions/notificationdataroles.h>
 #include <interfaces/ipluginmanager.h>
-#include <interfaces/ixmppstreams.h>
+#include <interfaces/ixmppstreammanager.h>
 #include <interfaces/istanzaprocessor.h>
 #include <interfaces/iservicediscovery.h>
 #include <interfaces/inotifications.h>
@@ -77,11 +77,11 @@ protected slots:
 	void onNotificationRemoved(int ANotifyId);
 	void onRostersViewIndexToolTips(IRosterIndex *AIndex, quint32 ALabelId, QMap<int,QString> &AToolTips);
 private:
-	IXmppStreams *FXmppStreams;
 	IServiceDiscovery *FDiscovery;
 	IStanzaProcessor *FStanzaProcessor;
 	INotifications *FNotifications;
 	IRostersViewPlugin *FRostersViewPlugin;
+	IXmppStreamManager *FXmppStreamManager;
 private:
 	QMap<Jid,int> FSHIGmailNotify;
 	QMap<QString,bool> FMailRequests;
