@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS>
-<TS version="2.0" language="pl" sourcelanguage="en">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="pl" sourcelanguage="en" version="2.0">
 <context>
     <name>GmailNotify</name>
     <message>
@@ -13,11 +11,7 @@
     </message>
     <message numerus="yes">
         <source>You have %n unread message(s)</source>
-        <translation>
-            <numerusform>Masz %n nieprzeczytaną wiadomość</numerusform>
-            <numerusform>Masz %n nieprzeczytane wiadomości</numerusform>
-            <numerusform>Masz %n nieprzeczytanych wiadomości</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <source>New e-mail for %1</source>
@@ -33,27 +27,19 @@
     </message>
     <message numerus="yes">
         <source>You have %n new unread message(s)</source>
-        <translation>
-            <numerusform>Masz %n nową, nieprzeczytaną wiadomość</numerusform>
-            <numerusform>Masz %n nowe, nieprzeczytane wiadomości</numerusform>
-            <numerusform>Masz %n nowych, nieprzeczytanych wiadomości</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message numerus="yes">
         <source>You have &lt;b&gt;%n unread letter(s)&lt;/b&gt;:</source>
-        <translation>
-            <numerusform>Masz &amp;lt;b&amp;gt;%n nieprzeczytaną wiadomość&amp;lt;/b?:</numerusform>
-            <numerusform>Masz &amp;lt;b&amp;gt;%n nieprzeczytaną wiadomość&amp;lt;/b?:</numerusform>
-            <numerusform>Masz &amp;lt;b&amp;gt;%n nieprzeczytane wiadomości&amp;lt;/b?:</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <source>When receiving a new message in google mail</source>
-        <translation type="unfinished"></translation>
+        <translation>Po otrzymaniu nowej wiadomości z poczty Google Mail</translation>
     </message>
     <message>
         <source>&lt;no subject&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -64,11 +50,7 @@
     </message>
     <message numerus="yes">
         <source>You have &lt;b&gt;%n unread letter(s)&lt;/b&gt;:</source>
-        <translation>
-            <numerusform>Masz &amp;lt;b&amp;gt;%n nieprzeczytaną wiadomość&amp;lt;/b?:</numerusform>
-            <numerusform>Masz &amp;lt;b&amp;gt;%n nieprzeczytaną wiadomość&amp;lt;/b?:</numerusform>
-            <numerusform>Masz &amp;lt;b&amp;gt;%n nieprzeczytane wiadomości&amp;lt;/b?:</numerusform>
-        </translation>
+        <translation type="unfinished"><numerusform></numerusform><numerusform></numerusform><numerusform></numerusform></translation>
     </message>
     <message>
         <source>GMail Notify</source>
