@@ -4,6 +4,7 @@
 #include <QMouseEvent>
 #include <QApplication>
 #include <QTextDocument>
+#include <definitions/stanzahandlerorders.h>
 
 #define SHC_GMAILNOTIFY                  "/iq[@type='set']/new-mail[@xmlns='" NS_GMAILNOTIFY "']"
 
@@ -145,8 +146,8 @@ void GmailNotify::stanzaRequestResult(const Jid &AStreamJid, const Stanza &AStan
 		{
 			if (!isSupported(AStreamJid))
 			{
-				Stanza enable("iq");
-				enable.setType("set").setId(FStanzaProcessor->newId());
+				Stanza enable(STANZA_KIND_IQ);
+				enable.setType(STANZA_TYPE_SET).setUniqueId();
 				enable.addElement("usersetting",NS_GOOGLESETTINGS).appendChild(enable.createElement("mailnotifications")).toElement().setAttribute("value","true");
 				FStanzaProcessor->sendStanzaOut(AStreamJid,enable);
 				insertStanzaHandler(AStreamJid);
@@ -209,8 +210,8 @@ QDialog *GmailNotify::showNotifyDialog(const Jid &AAccountJid)
 
 bool GmailNotify::checkNewMail(const Jid &AStreamJid, bool AFull)
 {
-	Stanza query("iq");
-	query.setType("get").setId(FStanzaProcessor->newId());
+	Stanza query(STANZA_KIND_IQ);
+	query.setType(STANZA_TYPE_GET).setUniqueId();
 	QDomElement queryElem = query.addElement("query",NS_GMAILNOTIFY);
    
    if (!AFull)
@@ -307,7 +308,7 @@ QList<int> GmailNotify::findAccountNotifies(const Jid &AAccountJid) const
 	QList<int> notifies;
 	for (QMap<int,Jid>::const_iterator it = FNotifies.constBegin(); it!=FNotifies.constEnd(); ++it)
 	{
-		if (it.value() && AAccountJid)
+		if (AAccountJid.pBare() == it.value().pBare())
 			notifies.append(it.key());
 	}
 	return notifies;
@@ -317,7 +318,7 @@ int GmailNotify::findThreadNotify(const Jid &AAccountJid, const QString &AThread
 {
 	for (QMap<int,Jid>::const_iterator it = FNotifies.constBegin(); it!=FNotifies.constEnd(); ++it)
 	{
-		if ((it.value() && AAccountJid) && it.value().resource()==AThreadId)
+		if (AAccountJid.pBare()==it.value().pBare() && it.value().resource()==AThreadId)
 			return it.key();
 	}
 	return -1;
