@@ -504,11 +504,9 @@ void GmailNotify::onRostersViewIndexToolTips(IRosterIndex *AIndex, quint32 ALabe
 			QString tooltip = tr("You have <b>%n unread letter(s)</b>:","",reply.totalMatched);
 			tooltip += "<ul>";
 			foreach(const IGmailThread &gthread, reply.theads)
-				tooltip += QString("<li>%1 (%2)</li>").arg(Qt::escape(gthread.subject)).arg(gthread.messages);
+				tooltip += QString("<li>%1 (%2)</li>").arg(gthread.subject.toHtmlEscaped()).arg(gthread.messages);
 			tooltip += "</ul>";
 			AToolTips.insert(RTTO_GMAILNOTIFY,tooltip);
 		}
 	}
 }
-
-Q_EXPORT_PLUGIN2(plg_gmailnotify, GmailNotify)

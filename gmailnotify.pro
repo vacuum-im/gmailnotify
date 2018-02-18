@@ -3,7 +3,7 @@ include(qmake/config.inc)
 
 #Project configuration
 TARGET              = gmailnotify
-QT                  = core gui xml
+QT                  = core gui widgets xml
 
 include(gmailnotify.pri)
 

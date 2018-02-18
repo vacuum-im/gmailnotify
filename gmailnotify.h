@@ -33,6 +33,7 @@ class GmailNotify :
 {
 	Q_OBJECT;
 	Q_INTERFACES(IPlugin IGmailNotify IStanzaHandler IStanzaRequestOwner IRostersClickHooker);
+	Q_PLUGIN_METADATA(IID "org.vacuum-im.plugins.GmailNotify");
 public:
 	GmailNotify();
 	~GmailNotify();

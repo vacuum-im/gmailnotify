@@ -30,7 +30,7 @@ void NotifyGmailDialog::setGmailReply(const IGmailReply &AReply)
 	
 	QString list = "<ul>";
 	foreach(const IGmailThread &gthread, FReply.theads)
-		list += QString("<li><a href='%3'>%1</a> (%2)</li>").arg(Qt::escape(gthread.subject)).arg(gthread.messages).arg(gthread.threadUrl.toString());
+		list += QString("<li><a href='%3'>%1</a> (%2)</li>").arg(gthread.subject.toHtmlEscaped()).arg(gthread.messages).arg(gthread.threadUrl.toString());
 	list += "</ul>";
 	ui.lblThreads->setText(list);
 }
